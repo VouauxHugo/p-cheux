@@ -49,6 +49,14 @@ TTF_Font* Sans;
 int tour = 0;
 int role;
 char guessWord[40];
+int choix=0;
+int tabChoix[2];
+int choix0=0;
+int choix1=0;
+int choix2=0;
+int choix3=0;
+int choix4=0;
+char* mot;
 
 volatile int synchro;
 
@@ -170,6 +178,21 @@ void manageEvent(SDL_Event event)
                         gServerPort,sendBuffer);
                         connectEnabled=0;
                     }
+                case 4:
+                    SDL_GetMouseState( &mx, &my );
+                    if ((mx<1024/2+100) && (my<768/2+25) &&(mx>1024/2-100) && (my>768/2-25) && (choix0==0))
+                    {
+                        if(gId!=0){
+                            tabChoix[choix]=0;
+                            choix++;
+                            choix0=1;
+                            if(choix==2){
+                                sprintf(sendBuffer,"C %d %d %d",gId,tabChoix[0],tabChoix[1]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                        }
+                    }
+                    //sur les 5 noms
                 default:
                     break;
            }
@@ -226,8 +249,9 @@ void manageNetwork()
                 }
                 break;
         case 3 :
-                scanf("%s",word);
-                sprintf(sendBuffer,"M %d %s",gId,word);
+                printf("\nA toi d'écrire : ");
+                scanf("%[^\n]", mot);
+                sprintf(sendBuffer,"M %d %s",gId,mot);
                 sendMessageToServer(gServerIpAddress,gServerPort,sendBuffer);
                 screenNumber=2;
                 break;
@@ -400,7 +424,6 @@ void manageRedraw()
         }
         case 3 :
         {
-                printf("A toi d'écrire\n");
                 // On efface l'écran
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 230);
             SDL_Rect rect = {0, 0, 1024, 768};

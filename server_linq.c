@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
                                                         joueurSuivant=0;
                                                         indiceM=1;
                                                 }
-                                                sprintf(reply,"W %s %s %s %s %s %s %s %s %s %s %d", tcpClients[0].words[0], tcpClients[1].words[0], tcpClients[2].words[0], tcpClients[3].words[0],tcpClients[4].words[0], tcpClients[0].words[1], tcpClients[1].words[1], tcpClients[2].words[1], tcpClients[3].words[1],tcpClients[4].words[1], &joueurSuivant);
+                                                sprintf(reply,"W %s %s %s %s %s %s %s %s %s %s %d", tcpClients[0].words[0], tcpClients[1].words[0], tcpClients[2].words[0], tcpClients[3].words[0],tcpClients[4].words[0], tcpClients[0].words[1], tcpClients[1].words[1], tcpClients[2].words[1], tcpClients[3].words[1],tcpClients[4].words[1], joueurSuivant);
                                                 broadcastMessage(reply);
                                                 nbReponses++;
                                                 if(nbReponses==9)
