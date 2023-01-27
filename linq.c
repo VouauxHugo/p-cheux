@@ -35,6 +35,7 @@ int goEnabled;
 int connectEnabled;
 int screenNumber;
 char word[40];
+char roleaff[100];
 int cptWord;
 int quit = 0;
 SDL_Event event;
@@ -44,8 +45,14 @@ SDL_Window * window;
 SDL_Renderer *renderer;
  
 SDL_Surface *connectbutton;
+SDL_Surface *affiche;
 SDL_Texture *texture_connectbutton;
-TTF_Font* Sans; 
+SDL_Texture *texture_affiche;
+SDL_Surface *fond[3],*personne[5];
+SDL_Texture *texture_fond[3],*texture_personnes[5];
+TTF_Font* Sans60; 
+TTF_Font* Sans20; 
+TTF_Font* Sans30; 
 int tour = 0;
 int role;
 char guessWord[40];
@@ -170,7 +177,7 @@ void manageEvent(SDL_Event event)
             {
                 case 0:
                     SDL_GetMouseState( &mx, &my );
-                    if ((mx<1024/2+100) && (my<768/2+25) &&(mx>1024/2-100) && (my>768/2-25) && (connectEnabled==1))
+                    if ((mx<800) && (my<450) &&(mx>400) && (my>50) && (connectEnabled==1))
                     {
                         sprintf(sendBuffer,"C %s %d %s",
                         gClientIpAddress,gClientPort,gName);
@@ -180,7 +187,7 @@ void manageEvent(SDL_Event event)
                     }
                 case 4:
                     SDL_GetMouseState( &mx, &my );
-                    if ((mx<1024/2+100) && (my<768/2+25) &&(mx>1024/2-100) && (my>768/2-25) && (choix0==0))
+                    if ((mx<1000/2+100) && (my<500/2+25) &&(mx>1000/2-100) && (my>500/2-25) && (choix0==0))
                     {
                         if(gId!=0){
                             tabChoix[choix]=0;
@@ -237,37 +244,43 @@ void manageNetwork()
                 break;
         case 2:
                 if(tour==gId){
-                        screenNumber = 3;
+                        printf("\nA toi d'écrire : ");
+                        scanf("%[^\n]", mot);
+                        sprintf(sendBuffer,"M %d %s",gId,mot);
+                        sendMessageToServer(gServerIpAddress,gServerPort,sendBuffer);
                 }
                 switch(gbuffer[0])
                 {
                         case 'W':
                                 sscanf(gbuffer+2,"%s %s %s %s %s %s %s %s %s %s %d",words[0],words[1],words[2],words[3],words[4],words[5],words[6],words[7],words[8],words[9], &tour);
                                 if (strcmp(words[9],"-")!=0)
-                                        screenNumber=4;
+                                        screenNumber=3;
                                 break;
+                        default:
+                            break;
                 }
                 break;
         case 3 :
-                printf("\nA toi d'écrire : ");
-                scanf("%[^\n]", mot);
-                sprintf(sendBuffer,"M %d %s",gId,mot);
-                sendMessageToServer(gServerIpAddress,gServerPort,sendBuffer);
-                screenNumber=2;
-                break;
-        case 4 :
                 quit=1;
                 break;
+        default:
+            break;
 
         }
         synchro=0;
     }
 }
 
-void myRenderText(char *m,int x,int y)
+void myRenderText(char *m,int x,int y, int taille)
 {
     SDL_Color col1 = {0, 0, 0};
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, m, col1);
+    SDL_Surface* surfaceMessage;
+    if(taille==60)
+        surfaceMessage = TTF_RenderText_Solid(Sans60, m, col1);
+    else if(taille==30)
+        surfaceMessage = TTF_RenderText_Solid(Sans30, m, col1);
+    else if(taille==20)
+        surfaceMessage = TTF_RenderText_Solid(Sans20, m, col1);
     SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
     SDL_Rect Message_rect;
@@ -288,243 +301,103 @@ void manageRedraw()
         case 0:
             // On efface l'écran
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 230);
-            SDL_Rect rect = {0, 0, 1024, 768};
+            SDL_Rect rect = {0, 0, 1000, 500};
             SDL_RenderFillRect(renderer, &rect);
 
             // si connectEnabled, alors afficher connect
             if (connectEnabled==1)
             {
-                SDL_Rect dstrect = {1024/2-250/2, 768/2-65/2, 250, 65 };
+                SDL_Rect dstrect = {400, 50, 400, 400 };
                 SDL_RenderCopy(renderer, texture_connectbutton, NULL, &dstrect);
+                SDL_Rect aff = {0, 0, 250, 500 };
+                SDL_RenderCopy(renderer, texture_affiche, NULL, &aff);
             }
 
             if (cptWord>0)
             {
-                myRenderText(word,105,350);
+                myRenderText(word,105,350,60);
             }
             break;
         case 1:
         {
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 230);
-            SDL_Rect rect = {0, 0, 1024, 768};
+            if(gId==0)
+                SDL_SetRenderDrawColor(renderer, 100, 255, 100, 230);//vert
+            if(gId==1)
+                SDL_SetRenderDrawColor(renderer, 100, 100, 255, 230);//bleu
+            if(gId==2)
+                SDL_SetRenderDrawColor(renderer, 255, 100, 255, 230);//violet
+            if(gId==3)
+                SDL_SetRenderDrawColor(renderer, 255, 100, 100, 230);//rouge
+            if(gId==4)
+                SDL_SetRenderDrawColor(renderer, 255, 255, 100, 230);//jaune
+            SDL_Rect rect = {0, 0, 1000, 500};
             SDL_RenderFillRect(renderer, &rect);
 
-            /*SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            SDL_Rect rect_j1;
-            rect_j1.x = 400;//abscisse
-            rect_j1.y = 350;//ordonnee
-            rect_j1.w = 200;
-            rect_j1.h = 200;
-            SDL_RenderDrawRect(renderer, &rect_j1);
-            //SDL_RenderDrawLine(renderer, rect_j1.x,rect_j1.y+rect_j1.h, rect_j1.x+rect_j1.w, J1_y+Height);*/
-
-            myRenderText(gNames[0],105,50);
-            myRenderText(gNames[1],105,110);
-            myRenderText(gNames[2],105,160);
-            myRenderText(gNames[3],105,210);
-            myRenderText(gNames[4],105,260);
+            myRenderText("Personnes connectees :", 100, 50,60);
+            myRenderText(gNames[0],150,100,60);
+            myRenderText(gNames[1],150,160,60);
+            myRenderText(gNames[2],150,210,60);
+            myRenderText(gNames[3],150,260,60);
+            myRenderText(gNames[4],150,310,60);
+            myRenderText("Le jeu va bientot commencer ...", 50, 410,60);
             break;
         }
         case 2:
         {
             // On efface l'écran
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 230);
-            SDL_Rect rect = {0, 0, 1024, 768};
+            if(role){
+                SDL_SetRenderDrawColor(renderer, 255, 100, 100, 230);//rouge
+            }  
+            else{
+                SDL_SetRenderDrawColor(renderer, 100, 255, 100, 230);//vert
+            }
+            SDL_Rect rect = {0, 0, 1000, 500};
             SDL_RenderFillRect(renderer, &rect);
 
-            //on définit l'interface graphique de la page de jeu
-            //partie ajout des rectangles pour chaque joeur (les boites de mots)
-            if(role)
-                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-            else
-                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            SDL_Rect fondN = { 25, 25, 950, 440 };
+            SDL_RenderCopy(renderer, texture_fond[2], NULL, &fondN);
 
-            SDL_Rect rect_j1;
-            rect_j1.x = Gauche_x;//abscisse
-            rect_j1.y = J1_y;//ordonnee
-            rect_j1.w = Width;
-            rect_j1.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j1);
-            SDL_RenderDrawLine(renderer, Gauche_x,J1_y+Height/2, Gauche_x+Width, J1_y+Height/2);
-            myRenderText(words[0],rect_j1.x+25,rect_j1.y+25);
-            myRenderText(words[5],rect_j1.x+75,rect_j1.y+75);
+            SDL_Rect pers1 = { 100, 350, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes[1], NULL, &pers1);
+            SDL_Rect pers2 = { 100, 200, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes[1], NULL, &pers2);
+            SDL_Rect pers3 = { 400, 50, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes[1], NULL, &pers3);
+            SDL_Rect pers4 = { 700, 200, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes[1], NULL, &pers4);
+            SDL_Rect pers5 = { 700, 350, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes[1], NULL, &pers5);
 
-            SDL_Rect rect_j2;
-            rect_j2.x = Gauche_x;//abscisse
-            rect_j2.y = J2_y;//ordonnee
-            rect_j2.w = Width;
-            rect_j2.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j2);
-            SDL_RenderDrawLine(renderer, Gauche_x,J2_y+Height/2, Gauche_x+Width, J2_y+Height/2);
-            myRenderText(words[1],rect_j2.x+25,rect_j2.y+25);
-            myRenderText(words[6],rect_j2.x+75,rect_j2.y+75);
+            myRenderText(gNames[0], 110, 350 ,30);
+            myRenderText(gNames[1], 110, 200 ,30);
+            myRenderText(gNames[2], 410, 50 ,30);
+            myRenderText(gNames[3], 710, 200 ,30);
+            myRenderText(gNames[4], 710, 350 ,30);
 
-            SDL_Rect rect_j3;
-            rect_j3.x = Droite_x;//abscisse
-            rect_j3.y = J3_y;//ordonnee
-            rect_j3.w = Width;
-            rect_j3.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j3);
-            SDL_RenderDrawLine(renderer, Droite_x,J3_y+Height/2, Droite_x+Width, J3_y+Height/2);
-            myRenderText(words[2],rect_j3.x+25,rect_j3.y+25);
-            myRenderText(words[7],rect_j3.x+75,rect_j3.y+75);
+            myRenderText(words[0], 120, 380 ,20);
+            myRenderText(words[1], 120, 240 ,20);
+            myRenderText(words[2], 420, 90 ,20);
+            myRenderText(words[3], 720, 240 ,20);
+            myRenderText(words[4], 720, 390 ,20);
 
-            SDL_Rect rect_j4;
-            rect_j4.x = Droite_x;//abscisse
-            rect_j4.y = J4_y;//ordonnee
-            rect_j4.w = Width;
-            rect_j4.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j4);
-            SDL_RenderDrawLine(renderer, Droite_x,J4_y+Height/2, Droite_x+Width, J4_y+Height/2);
-            myRenderText(words[3],rect_j4.x+25,rect_j4.y+25);
-            myRenderText(words[8],rect_j4.x+75,rect_j4.y+75);
+            myRenderText(words[5], 120, 410 ,20);
+            myRenderText(words[6], 120, 270 ,20);
+            myRenderText(words[7], 420, 120 ,20);
+            myRenderText(words[8], 720, 270 ,20);
+            myRenderText(words[9], 720, 420 ,20);
 
-            SDL_Rect rect_j5;
-            rect_j5.x = Droite_x;//abscisse
-            rect_j5.y = J5_y;//ordonnee
-            rect_j5.w = Width;
-            rect_j5.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j5);
-            SDL_RenderDrawLine(renderer, Droite_x,J5_y+Height/2, Droite_x+Width, J5_y+Height/2);
-            myRenderText(words[4],rect_j5.x+25,rect_j5.y+25);
-            myRenderText(words[9],rect_j5.x+75,rect_j5.y+75);
-
-            //fin partie création rectangle
-            //partie écriture des noms de personnages
-            TTF_Font* Sans2 = TTF_OpenFont("mrsmonster.ttf", 42);
-            char *role[]={"Espion", "Contre-espion"};
-            SDL_Color col1 = {0, 0, 0};
-            //écriture pour chaque joueur de son nom
-            for(int i=0; i<5; i++)
-            {
-                SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans2, gNames[i], col1);
-                SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-                SDL_Rect Message_rect;
-                if (i < 2)
-                {
-                    
-                    Message_rect.x = Gauche_x+40;
-                    Message_rect.y = 230*i;
-                    Message_rect.w = surfaceMessage->w;
-                    Message_rect.h = surfaceMessage->h;
-                }
-                else
-                {
-                    Message_rect.x = Droite_x+40;
-                    Message_rect.y = 195*(i-2);
-                    Message_rect.w = surfaceMessage->w;
-                    Message_rect.h = surfaceMessage->h;
-                }
-
-                SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
-                SDL_DestroyTexture(Message);
-                SDL_FreeSurface(surfaceMessage);
+            if(role){
+                strcpy(roleaff, "Vous etes ESPION :   ");
+                strcat(roleaff, guessWord);
+            }  
+            else{
+                strcpy(roleaff, "Vous etes CONTRE-ESPION");
             }
-            //fin partie message
+            myRenderText(roleaff, 25, 465 ,30);
         }
         case 3 :
         {
-                // On efface l'écran
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 230);
-            SDL_Rect rect = {0, 0, 1024, 768};
-            SDL_RenderFillRect(renderer, &rect);
-
-            //zone de saisie
-            if(role)
-                SDL_SetRenderDrawColor(renderer, 0, 100, 0, 255);
-            else
-                SDL_SetRenderDrawColor(renderer, 100, 0, 0, 255);
-
-            SDL_Rect rect_sai;
-            rect_sai.x = 450;//abscisse
-            rect_sai.y = 300;//ordonnee
-            rect_sai.w = Width;
-            rect_sai.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_sai);
-
-            //on définit l'interface graphique de la page de jeu
-            //partie ajout des rectangles pour chaque joeur (les boites de mots)
-            SDL_Rect rect_j1;
-            rect_j1.x = Gauche_x;//abscisse
-            rect_j1.y = J1_y;//ordonnee
-            rect_j1.w = Width;
-            rect_j1.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j1);
-            SDL_RenderDrawLine(renderer, Gauche_x,J1_y+Height/2, Gauche_x+Width, J1_y+Height/2);
-            myRenderText(words[0],rect_j1.x+25,rect_j1.y+25);
-            myRenderText(words[5],rect_j1.x+75,rect_j1.y+75);
-
-            SDL_Rect rect_j2;
-            rect_j2.x = Gauche_x;//abscisse
-            rect_j2.y = J2_y;//ordonnee
-            rect_j2.w = Width;
-            rect_j2.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j2);
-            SDL_RenderDrawLine(renderer, Gauche_x,J2_y+Height/2, Gauche_x+Width, J2_y+Height/2);
-            myRenderText(words[1],rect_j2.x+25,rect_j2.y+25);
-            myRenderText(words[6],rect_j2.x+75,rect_j2.y+75);
-
-            SDL_Rect rect_j3;
-            rect_j3.x = Droite_x;//abscisse
-            rect_j3.y = J3_y;//ordonnee
-            rect_j3.w = Width;
-            rect_j3.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j3);
-            SDL_RenderDrawLine(renderer, Droite_x,J3_y+Height/2, Droite_x+Width, J3_y+Height/2);
-            myRenderText(words[2],rect_j3.x+25,rect_j3.y+25);
-            myRenderText(words[7],rect_j3.x+75,rect_j3.y+75);
-
-            SDL_Rect rect_j4;
-            rect_j4.x = Droite_x;//abscisse
-            rect_j4.y = J4_y;//ordonnee
-            rect_j4.w = Width;
-            rect_j4.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j4);
-            SDL_RenderDrawLine(renderer, Droite_x,J4_y+Height/2, Droite_x+Width, J4_y+Height/2);
-            myRenderText(words[3],rect_j4.x+25,rect_j4.y+25);
-            myRenderText(words[8],rect_j4.x+75,rect_j4.y+75);
-
-            SDL_Rect rect_j5;
-            rect_j5.x = Droite_x;//abscisse
-            rect_j5.y = J5_y;//ordonnee
-            rect_j5.w = Width;
-            rect_j5.h = Height;
-            SDL_RenderDrawRect(renderer, &rect_j5);
-            SDL_RenderDrawLine(renderer, Droite_x,J5_y+Height/2, Droite_x+Width, J5_y+Height/2);
-            myRenderText(words[4],rect_j5.x+25,rect_j5.y+25);
-            myRenderText(words[9],rect_j5.x+75,rect_j5.y+75);
-
-            //fin partie création rectangle
-            //partie écriture des noms de personnages
-            TTF_Font* Sans2 = TTF_OpenFont("mrsmonster.ttf", 42);
-            char *role[]={"Espion", "Contre-espion"};
-            SDL_Color col1 = {0, 0, 0};
-            //écriture pour chaque joueur de son nom
-            for(int i=0; i<5; i++)
-            {
-                SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans2, gNames[i], col1);
-                SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-                SDL_Rect Message_rect;
-                if (i < 2)
-                {
-                    
-                    Message_rect.x = Gauche_x+40;
-                    Message_rect.y = 230*i;
-                    Message_rect.w = surfaceMessage->w;
-                    Message_rect.h = surfaceMessage->h;
-                }
-                else
-                {
-                    Message_rect.x = Droite_x+40;
-                    Message_rect.y = 195*(i-2);
-                    Message_rect.w = surfaceMessage->w;
-                    Message_rect.h = surfaceMessage->h;
-                }
-
-                SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
-                SDL_DestroyTexture(Message);
-                SDL_FreeSurface(surfaceMessage);
-            }
+            break;
             //fin partie message
         }
         default:
@@ -556,12 +429,28 @@ int main(int argc, char ** argv)
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
      
-    window = SDL_CreateWindow("SDL2 LINQ", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1024, 768, 0);
+    window = SDL_CreateWindow("SDL2 LINQ", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1000, 500, 0);
      
     renderer = SDL_CreateRenderer(window, -1, 0);
 
     connectbutton = IMG_Load("connectbutton.png");
     texture_connectbutton = SDL_CreateTextureFromSurface(renderer, connectbutton);
+    affiche = IMG_Load("linq.png");
+    texture_affiche = SDL_CreateTextureFromSurface(renderer, affiche);
+
+    int i;
+    //Import des images
+    fond[0]=IMG_Load("vert1000x500.png");
+    fond[1]=IMG_Load("rouge1000x500.png");
+    fond[2]=IMG_Load("noir976x700.png");
+    for(i=0; i<5; i++)
+        personne[i]=IMG_Load("gris250x100.png");
+
+    //Création des textures
+    for (i=0;i<3;i++)
+        texture_fond[i] = SDL_CreateTextureFromSurface(renderer, fond[i]);
+    for (i=0;i<5;i++)
+        texture_personnes[i] = SDL_CreateTextureFromSurface(renderer, personne[i]);
 
     // Initialisation de variables
 
@@ -578,7 +467,9 @@ int main(int argc, char ** argv)
     strcpy(word,"");
     cptWord=0;
 
-    Sans = TTF_OpenFont("sans.ttf", 60); 
+    Sans60 = TTF_OpenFont("sans.ttf", 60);
+    Sans30 = TTF_OpenFont("sans.ttf", 30);
+    Sans20 = TTF_OpenFont("sans.ttf", 20); 
 
     /* Creation du thread serveur tcp. */
     printf ("Creation du thread serveur tcp !\n");
