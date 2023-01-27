@@ -63,7 +63,7 @@ int choix1=0;
 int choix2=0;
 int choix3=0;
 int choix4=0;
-char *mot = "  ";
+char *mot = " ";
 char *letter; //lettre appuyée
 char buffer[40]; //résultat
 int size=1;
@@ -164,188 +164,378 @@ void manageEvent(SDL_Event event)
             if(screenNumber==2 && tour==gId){
                 if (size+1<=40){
                         switch(event.key.keysym.sym){
-                                case SDLK_a : 
-                                        letter = "a";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_b : 
-                                        letter = "b";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_c : 
-                                        letter = "c";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_d : 
-                                        letter = "d";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_e : 
-                                        letter = "e";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_f : 
-                                        letter = "f";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_g : 
-                                        letter = "g";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_h : 
-                                        letter = "h";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_i : 
-                                        letter = "i";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_j : 
-                                        letter = "j";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_k : 
-                                        letter = "k";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_l : 
-                                        letter = "l";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_m : 
-                                        letter = "m";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_n : 
-                                        letter = "n";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_o : 
-                                        letter = "o";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_p : 
-                                        letter = "p";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_q : 
-                                        letter = "q";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_r : 
-                                        letter = "r";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_s : 
-                                        letter = "s";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_t : 
-                                        letter = "t";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_u : 
-                                        letter = "u";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_v : 
-                                        letter = "v";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_w : 
-                                        letter = "w";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_x : 
-                                        letter = "x";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_y: 
-                                        letter = "y";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_z : 
-                                        letter = "z";
-                                        strcat(strcpy(buffer,mot),letter);
-                                        mot = buffer;
-                                        size++;
-                                        break;
-                                case SDLK_BACKSPACE :
-                                        if (size-1>=0){
-                                                mot[strlen(mot)-1] = 0;
-                                                size--;
-                                        }
-                                        break;
-                                case SDLK_RETURN : 
-                                        printf("%s\n",mot);
-                                        sprintf(sendBuffer,"M %d %s",gId,mot);
-                                        sendMessageToServer(gServerIpAddress,gServerPort,sendBuffer);
-                                        strcpy(mot, "  ");
-                                        strcpy(buffer, " ");
-                                        break;
+                            case SDLK_a : 
+                                letter = "a";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_b : 
+                                letter = "b";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_c : 
+                                letter = "c";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_d : 
+                                letter = "d";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_e : 
+                                letter = "e";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_f : 
+                                letter = "f";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_g : 
+                                letter = "g";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_h : 
+                                letter = "h";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_i : 
+                                letter = "i";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_j : 
+                                letter = "j";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_k : 
+                                letter = "k";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_l : 
+                                letter = "l";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_m : 
+                                letter = "m";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_n : 
+                                letter = "n";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_o : 
+                                letter = "o";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_p : 
+                                letter = "p";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_q : 
+                                letter = "q";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_r : 
+                                letter = "r";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_s : 
+                                letter = "s";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_t : 
+                                letter = "t";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_u : 
+                                letter = "u";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_v : 
+                                letter = "v";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_w : 
+                                letter = "w";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_x : 
+                                letter = "x";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_y: 
+                                letter = "y";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_z : 
+                                letter = "z";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_BACKSPACE :
+                                if (size-1>=0){
+                                    mot[strlen(mot)-1] = 0;
+                                    size--;
+                                }
+                                break;
+                            case SDLK_RETURN : 
+                                printf("%s\n",mot);
+                                sprintf(sendBuffer,"M %d %s",gId,mot);
+                                sendMessageToServer(gServerIpAddress,gServerPort,sendBuffer);
+                                strcpy(mot, " ");
+                                strcpy(buffer, " ");
+                                size=1;
+                                break;
                         }
                 }
                 else 
                 {
-                        switch(event.key.keysym.sym)
-                        {
-                                case SDLK_BACKSPACE :
-                                        if (size-1>=0){
-                                                mot[strlen(mot)-1] = 0;
-                                                size--;
-                                        }
-                                        break;
+                    switch(event.key.keysym.sym)
+                    {
+                        case SDLK_BACKSPACE :
+                            if (size-1>=0){
+                                mot[strlen(mot)-1] = 0;
+                                size--;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            if(screenNumber==4 && role==0){
+                if (size+1<=40){
+                        switch(event.key.keysym.sym){
+                            case SDLK_a : 
+                                letter = "a";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_b : 
+                                letter = "b";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_c : 
+                                letter = "c";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_d : 
+                                letter = "d";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_e : 
+                                letter = "e";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_f : 
+                                letter = "f";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_g : 
+                                letter = "g";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_h : 
+                                letter = "h";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_i : 
+                                letter = "i";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_j : 
+                                letter = "j";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_k : 
+                                letter = "k";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_l : 
+                                letter = "l";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_m : 
+                                letter = "m";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_n : 
+                                letter = "n";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_o : 
+                                letter = "o";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_p : 
+                                letter = "p";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_q : 
+                                letter = "q";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_r : 
+                                letter = "r";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_s : 
+                                letter = "s";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_t : 
+                                letter = "t";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_u : 
+                                letter = "u";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_v : 
+                                letter = "v";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_w : 
+                                letter = "w";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_x : 
+                                letter = "x";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_y: 
+                                letter = "y";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_z : 
+                                letter = "z";
+                                strcat(strcpy(buffer,mot),letter);
+                                mot = buffer;
+                                size++;
+                                break;
+                            case SDLK_BACKSPACE :
+                                if (size-1>=0){
+                                    mot[strlen(mot)-1] = 0;
+                                    size--;
+                                }
+                                break;
+                            case SDLK_RETURN : 
+                                printf("%s\n",mot);
+                                sprintf(sendBuffer,"D %d %s",gId,mot);
+                                sendMessageToServer(gServerIpAddress,gServerPort,sendBuffer);
+                                strcpy(mot, " ");
+                                strcpy(buffer, " ");
+                                size=1;
+                                break;
                         }
+                }
+                else 
+                {
+                    switch(event.key.keysym.sym)
+                    {
+                        case SDLK_BACKSPACE :
+                            if (size-1>=0){
+                                mot[strlen(mot)-1] = 0;
+                                size--;
+                            }
+                            break;
+                    }
                 }
             }
 
@@ -378,21 +568,85 @@ void manageEvent(SDL_Event event)
                         gServerPort,sendBuffer);
                         connectEnabled=0;
                     }
-                case 4:
+                    break;
+                case 3:
                     SDL_GetMouseState( &mx, &my );
-                    if ((mx<1000/2+100) && (my<500/2+25) &&(mx>1000/2-100) && (my>500/2-25) && (choix0==0))
+                    if ((mx<300) && (my<450) &&(mx>100) && (my>350))
                     {
-                        if(gId!=0){
+                        if(gId!=0 && tabChoix[choix]==-1 && tabChoix[0]!=0){
                             tabChoix[choix]=0;
                             choix++;
-                            choix0=1;
-                            if(choix==2){
-                                sprintf(sendBuffer,"C %d %d %d",gId,tabChoix[0],tabChoix[1]);
+                            if(choix==2 && role==0){
+                                sprintf(sendBuffer,"S %d %d %d",gId,tabChoix[0],tabChoix[1]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                            else if(role){
+                                sprintf(sendBuffer,"S %d %d %d",gId,gId,tabChoix[0]);
                                 sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
                             }
                         }
                     }
-                    //sur les 5 noms
+                    if ((mx<300) && (my<300) &&(mx>100) && (my>200))
+                    {
+                        if(gId!=1 && tabChoix[choix]==-1 && tabChoix[0]!=1){
+                            tabChoix[choix]=1;
+                            choix++;
+                            if(choix==2 && role==0){
+                                sprintf(sendBuffer,"S %d %d %d",gId,tabChoix[0],tabChoix[1]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                            else if(role){
+                                sprintf(sendBuffer,"S %d %d %d",gId,gId,tabChoix[0]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                        }
+                    }
+                    if ((mx<600) && (my<150) &&(mx>400) && (my>50))
+                    {
+                        if(gId!=2 && tabChoix[choix]==-1 && tabChoix[0]!=2){
+                            tabChoix[choix]=2;
+                            choix++;
+                            if(choix==2 && role==0){
+                                sprintf(sendBuffer,"S %d %d %d",gId,tabChoix[0],tabChoix[1]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                            else if(role){
+                                sprintf(sendBuffer,"S %d %d %d",gId,gId,tabChoix[0]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                        }
+                    }
+                    if ((mx<900) && (my<300) &&(mx>700) && (my>200))
+                    {
+                        if(gId!=3 && tabChoix[choix]==-1 && tabChoix[0]!=3){
+                            tabChoix[choix]=3;
+                            choix++;
+                            if(choix==2 && role==0){
+                                sprintf(sendBuffer,"S %d %d %d",gId,tabChoix[0],tabChoix[1]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                            else if(role){
+                                sprintf(sendBuffer,"S %d %d %d",gId,gId,tabChoix[0]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                        }
+                    }
+                    if ((mx<900) && (my<450) &&(mx>700) && (my>350))
+                    {
+                        if(gId!=4 && tabChoix[choix]==-1 && tabChoix[0]!=4){
+                            tabChoix[choix]=4;
+                            choix++;
+                            if(choix==2 && role==0){
+                                sprintf(sendBuffer,"S %d %d %d",gId,tabChoix[0],tabChoix[1]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                            else if(role){
+                                sprintf(sendBuffer,"S %d %d %d",gId,gId,tabChoix[0]);
+                                sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+                            }
+                        }
+                    }
+                    break;
                 default:
                     break;
            }
@@ -435,7 +689,7 @@ void manageNetwork()
                         break;
                 }
                 break;
-        case 2:
+            case 2:
                 if(tour==gId){
                         printf("\nA toi d'écrire : ");
                 }
@@ -450,11 +704,20 @@ void manageNetwork()
                             break;
                 }
                 break;
-        case 3 :
-                quit=1;
+            case 3 :
+                switch(gbuffer[0])
+                {
+                        case 'S':
+                                sscanf(gbuffer+2,"%d", &screenNumber);
+                                break;
+                        default:
+                            break;
+                }
                 break;
-        default:
-            break;
+            case 4 :
+                break;
+            default:
+                break;
 
         }
         synchro=0;
@@ -592,11 +855,168 @@ void manageRedraw()
             myRenderText(roleaff,335,250,30);
             if(tour==gId)
                 myRenderText(mot,335,300,30);
+            break;
         }
         case 3 :
         {
+            if(role){
+                SDL_SetRenderDrawColor(renderer, 255, 100, 100, 230);//rouge
+            }  
+            else{
+                SDL_SetRenderDrawColor(renderer, 100, 255, 100, 230);//vert
+            }
+            SDL_Rect rect = {0, 0, 1000, 500};
+            SDL_RenderFillRect(renderer, &rect);
+
+            SDL_Rect fondN = { 25, 25, 950, 440 };
+            SDL_RenderCopy(renderer, texture_fond[2], NULL, &fondN);
+            SDL_Rect fondJ = { 330, 250, 340, 140 };
+            SDL_RenderCopy(renderer, texture_fond[3], NULL, &fondJ);
+
+            SDL_Rect pers1 = { 100, 350, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers1);
+            SDL_Rect pers2 = { 100, 200, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers2);
+            SDL_Rect pers3 = { 400, 50, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers3);
+            SDL_Rect pers4 = { 700, 200, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers4);
+            SDL_Rect pers5 = { 700, 350, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers5);
+
+            myRenderText(gNames[0], 110, 350 ,30);
+            myRenderText(gNames[1], 110, 200 ,30);
+            myRenderText(gNames[2], 410, 50 ,30);
+            myRenderText(gNames[3], 710, 200 ,30);
+            myRenderText(gNames[4], 710, 350 ,30);
+
+            myRenderText(words[0], 120, 380 ,20);
+            myRenderText(words[1], 120, 240 ,20);
+            myRenderText(words[2], 420, 90 ,20);
+            myRenderText(words[3], 720, 240 ,20);
+            myRenderText(words[4], 720, 390 ,20);
+
+            myRenderText(words[5], 120, 410 ,20);
+            myRenderText(words[6], 120, 270 ,20);
+            myRenderText(words[7], 420, 120 ,20);
+            myRenderText(words[8], 720, 270 ,20);
+            myRenderText(words[9], 720, 420 ,20);
+
+            if(role){
+                strcpy(roleaff, "Vous etes ESPION :   ");
+                strcat(roleaff, guessWord);
+            }  
+            else{
+                strcpy(roleaff, "Vous etes CONTRE-ESPION");
+            }
+            myRenderText(roleaff, 25, 465 ,30);
+
+            if(choix==0){
+                strcpy(roleaff, "Vous devez maintenant");
+                myRenderText(roleaff,335,250,30);
+                if(role){
+                    strcpy(roleaff, "trouver l'autre espion.");
+                }
+                else{
+                    strcpy(roleaff, "trouver les 2 espions.");
+                }
+                myRenderText(roleaff,335,280,30);
+                if(role){
+                    strcpy(roleaff, "Clicez sur son nom");
+                }
+                else{
+                    strcpy(roleaff, "Clicez sur leur nom.");
+                }
+                myRenderText(roleaff,335, 310,30);
+            }
+            else{
+                strcpy(roleaff, "Vous avez choisi :");
+                myRenderText(roleaff,335,250,30);
+                strcpy(roleaff, gNames[tabChoix[0]]);
+                myRenderText(roleaff,335,280,30);
+                if(role){
+                    strcpy(roleaff, "En attente des autres");
+                    myRenderText(roleaff,335, 340,30);
+                }
+                else{
+                    if(choix==2){
+                        strcpy(roleaff, gNames[tabChoix[1]]);
+                        myRenderText(roleaff,335,310,30);
+                        strcpy(roleaff, "En attente des autres");
+                        myRenderText(roleaff,335, 340,30);
+                    }
+                }
+            }
+            
             break;
-            //fin partie message
+        }
+        case 4 :
+        {
+            if(role){
+                SDL_SetRenderDrawColor(renderer, 255, 100, 100, 230);//rouge
+            }  
+            else{
+                SDL_SetRenderDrawColor(renderer, 100, 255, 100, 230);//vert
+            }
+            SDL_Rect rect = {0, 0, 1000, 500};
+            SDL_RenderFillRect(renderer, &rect);
+
+            SDL_Rect fondN = { 25, 25, 950, 440 };
+            SDL_RenderCopy(renderer, texture_fond[2], NULL, &fondN);
+            SDL_Rect fondJ = { 330, 250, 340, 100 };
+            SDL_RenderCopy(renderer, texture_fond[3], NULL, &fondJ);
+
+            SDL_Rect pers1 = { 100, 350, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers1);
+            SDL_Rect pers2 = { 100, 200, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers2);
+            SDL_Rect pers3 = { 400, 50, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers3);
+            SDL_Rect pers4 = { 700, 200, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers4);
+            SDL_Rect pers5 = { 700, 350, 200, 100 };
+            SDL_RenderCopy(renderer, texture_personnes, NULL, &pers5);
+
+            myRenderText(gNames[0], 110, 350 ,30);
+            myRenderText(gNames[1], 110, 200 ,30);
+            myRenderText(gNames[2], 410, 50 ,30);
+            myRenderText(gNames[3], 710, 200 ,30);
+            myRenderText(gNames[4], 710, 350 ,30);
+
+            myRenderText(words[0], 120, 380 ,20);
+            myRenderText(words[1], 120, 240 ,20);
+            myRenderText(words[2], 420, 90 ,20);
+            myRenderText(words[3], 720, 240 ,20);
+            myRenderText(words[4], 720, 390 ,20);
+
+            myRenderText(words[5], 120, 410 ,20);
+            myRenderText(words[6], 120, 270 ,20);
+            myRenderText(words[7], 420, 120 ,20);
+            myRenderText(words[8], 720, 270 ,20);
+            myRenderText(words[9], 720, 420 ,20);
+
+            if(role){
+                strcpy(roleaff, "Vous etes ESPION :   ");
+                strcat(roleaff, guessWord);
+                myRenderText(roleaff, 25, 465 ,30);
+
+                strcpy(roleaff, "Les CONTRE-ESPIONS");
+                myRenderText(roleaff,335,250,30);
+                strcpy(roleaff, "cherchent le mot.");
+                myRenderText(roleaff,335,280,30);
+            }  
+            else{
+                strcpy(roleaff, "Vous etes CONTRE-ESPION");
+                myRenderText(roleaff, 25, 465 ,30);
+
+                strcpy(roleaff, "Selon vous, quel est");
+                myRenderText(roleaff,335,250,30);
+                strcpy(roleaff, "le mot secret ?");
+                myRenderText(roleaff,335,280,30);
+            }
+            if(!role)
+                myRenderText(mot,335, 310,30);             
+            break;
         }
         default:
             break;
@@ -656,6 +1076,8 @@ int main(int argc, char ** argv)
     strcpy(gNames[2],"-");
     strcpy(gNames[3],"-");
     strcpy(gNames[4],"-");
+    tabChoix[0]=-1;
+    tabChoix[1]=-1;
 
     goEnabled=0;
     connectEnabled=1;

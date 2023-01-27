@@ -298,8 +298,10 @@ int main(int argc, char *argv[])
                                                         indiceM=1;
                                                 }
                                                 nbReponses++;
-                                                if(nbReponses==9)
+                                                if(nbReponses==10)
                                                 {
+                                                        nbReponses = 0;
+                                                        indiceJp = 5;
                                                         fsmServer = 2;                                                
                                                 }
                                         }
@@ -307,8 +309,32 @@ int main(int argc, char *argv[])
                                         broadcastMessage(reply);
                                 }
                         default:
-                                //sprintf(reply,"W %s %s %s %s %s %s %s %s %s %s %d", tcpClients[0].words[0], tcpClients[1].words[0], tcpClients[2].words[0], tcpClients[3].words[0],tcpClients[4].words[0], tcpClients[0].words[1], tcpClients[1].words[1], tcpClients[2].words[1], tcpClients[3].words[1],tcpClients[4].words[1], joueurSuivant);
-                                //broadcastMessage(reply);
+                                break;
+                }
+        }
+        else if (fsmServer==2)
+        {
+                switch (buffer[0])
+                {
+                        case 'S':
+                                {
+                                        sscanf(buffer+2,"%d", &indiceJ);
+                                        if(indiceJ != indiceJp)
+                                        {
+                                                sscanf(buffer+4,"%d %d",&(tcpClients[indiceJ].choix[0]), &(tcpClients[indiceJ].choix[1]));
+                                                indiceJp=indiceJ;
+                                                nbReponses++;
+                                                if(nbReponses==5)
+                                                {
+                                                        nbReponses = 0;
+                                                        indiceJp = 5;
+                                                        fsmServer = 3;    
+                                                        sprintf(reply,"S 4");
+                                                        broadcastMessage(reply);                                            
+                                                }
+                                        }
+                                }
+                        default:
                                 break;
                 }
         }
