@@ -46,8 +46,10 @@ SDL_Renderer *renderer;
  
 SDL_Surface *connectbutton;
 SDL_Surface *affiche;
+SDL_Surface *replay;
 SDL_Texture *texture_connectbutton;
 SDL_Texture *texture_affiche;
+SDL_Texture *texture_replay;
 SDL_Surface *fond[4],*personne;
 SDL_Texture *texture_fond[4],*texture_personnes;
 TTF_Font* Sans60; 
@@ -934,10 +936,10 @@ void manageRedraw()
                 }
                 myRenderText(roleaff,335,280,30);
                 if(role){
-                    strcpy(roleaff, "Clicez sur son nom");
+                    strcpy(roleaff, "Cliquez sur son nom");
                 }
                 else{
-                    strcpy(roleaff, "Clicez sur leur nom.");
+                    strcpy(roleaff, "Cliquez sur leur nom.");
                 }
                 myRenderText(roleaff,335, 310,30);
             }
@@ -1063,6 +1065,9 @@ void manageRedraw()
             myRenderText(roleaff ,10, 330,30);
             sprintf(roleaff, "%s : %d", gNames[4], score4);
             myRenderText(roleaff ,10, 360,30);
+
+            SDL_Rect replayBUTTON = { 500, 200, 400, 200 };
+            SDL_RenderCopy(renderer, texture_replay, NULL, &replayBUTTON);
         }
         default:
             break;
@@ -1100,6 +1105,8 @@ int main(int argc, char ** argv)
 
     connectbutton = IMG_Load("connectbutton.png");
     texture_connectbutton = SDL_CreateTextureFromSurface(renderer, connectbutton);
+    replay = IMG_Load("replay.png");
+    texture_replay = SDL_CreateTextureFromSurface(renderer, replay);
     affiche = IMG_Load("linq.png");
     texture_affiche = SDL_CreateTextureFromSurface(renderer, affiche);
 
