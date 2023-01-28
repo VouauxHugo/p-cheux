@@ -663,6 +663,8 @@ void manageEvent(SDL_Event event)
                         for(int i=0; i<10; i++){
                             strcpy(words[i], "-");
                         }
+                        tabChoix[0]=-1;
+                        tabChoix[1]=-1;
                         cptWord=0;
                         tour = 0;
                         vrai =0;
