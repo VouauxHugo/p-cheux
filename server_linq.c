@@ -30,6 +30,7 @@ int deck[5]={0,0,0,1,1};//0 pour contre-espion, 1 pour espion
 char *mpts[]={"bas","muse","boulet","spectre","patron","moulin","piano","oseille","billet","Rome"};
 int joueurCourant, joueurSuivant, nbReponses, indiceJ, indiceJp = 5, indiceM = 0;
 int ind_WordToGuess;
+char noms[5][40];
 
 void error(const char *msg)
 {
@@ -217,13 +218,13 @@ int main(int argc, char *argv[])
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
      int n;
-        int i;
+     int i;
 
-        char com;
-        char clientIpAddress[256], clientName[256];
-        int clientPort;
-        int id;
-        char reply[256];
+     char com;
+     char clientIpAddress[256], clientName[256];
+     int clientPort;
+     int id;
+     char reply[256];
 
 
      if (argc < 2) {
@@ -258,6 +259,7 @@ int main(int argc, char *argv[])
                 strcpy(tcpClients[i].guess,"-");
                 tcpClients[i].score = 0;
                 tcpClients[i].vrai = 0;
+                strcpy(noms[i], "-");
         }
 
      while (1)
@@ -344,6 +346,7 @@ int main(int argc, char *argv[])
                                                 nbReponses++;
                                                 if(nbReponses==10)
                                                 {
+                                                        indiceM = 0;
                                                         nbReponses = 0;
                                                         indiceJp = 5;
                                                         fsmServer = 2;                                                
@@ -410,11 +413,45 @@ int main(int argc, char *argv[])
                                                                 else
                                                                         B=i;
                                                         }
+                                                        strcpy(noms[i], "-");
                                                 }
                                                 indiceJp = 5;
                                                 fsmServer = 4;
                                                 sprintf(reply,"R %d %d %s %d %d %d %d %d", A, B, mpts[ind_WordToGuess], tcpClients[0].score, tcpClients[1].score, tcpClients[2].score, tcpClients[3].score, tcpClients[4].score);
                                                 broadcastMessage(reply);                                     
+                                        }
+                                }
+                        }
+                        default:
+                                break;
+                }
+        }
+        else if (fsmServer==4)
+        {
+                switch (buffer[0])
+                {
+                        case 'N':
+                        {
+                                sscanf(buffer+2,"%d", &indiceJ);
+                                if(indiceJ != indiceJp)
+                                {
+                                        indiceJp=indiceJ;
+                                        nbReponses++;
+                                        strcpy(noms[indiceJ], tcpClients[indiceJ].name);
+                                        sprintf(reply,"L %s %s %s %s %s", noms[0], noms[1], noms[2], noms[3],noms[4]);
+                                        broadcastMessage(reply); 
+                                        if(nbReponses==5)
+                                        {
+                                                indiceJp = 5;
+                                                fsmServer=1;
+                                                melangerDeck();
+                                                affecterRoles();
+                                                razJoueurs();//mots que chaque joueur a dit pour la manche précédente doivent être remis à zéro
+                                                broadcastRoles();
+                                                broadcastWord();//tiere un mot au hasard et l'envoyer le mot pour les espions UNIQUEMENT
+                                                printClients();
+                                                joueurSuivant=0;
+                                                nbReponses=0;                                  
                                         }
                                 }
                         }

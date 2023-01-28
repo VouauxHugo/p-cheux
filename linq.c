@@ -66,7 +66,7 @@ int choix1=0;
 int choix2=0;
 int choix3=0;
 int choix4=0;
-char *mot = " ";
+char *mot = "  ";
 char *letter; //lettre appuyée
 char buffer[40]; //résultat
 int size=1;
@@ -335,7 +335,7 @@ void manageEvent(SDL_Event event)
                                 printf("%s\n",mot);
                                 sprintf(sendBuffer,"M %d %s",gId,mot);
                                 sendMessageToServer(gServerIpAddress,gServerPort,sendBuffer);
-                                strcpy(mot, " ");
+                                strcpy(mot, "  ");
                                 strcpy(buffer, " ");
                                 size=1;
                                 break;
@@ -524,7 +524,7 @@ void manageEvent(SDL_Event event)
                                 printf("%s\n",mot);
                                 sprintf(sendBuffer,"D %d %s",gId,mot);
                                 sendMessageToServer(gServerIpAddress,gServerPort,sendBuffer);
-                                strcpy(mot, " ");
+                                strcpy(mot, "  ");
                                 strcpy(buffer, " ");
                                 size=1;
                                 break;
@@ -652,6 +652,31 @@ void manageEvent(SDL_Event event)
                         }
                     }
                     break;
+                case 5:
+                    SDL_GetMouseState( &mx, &my );
+                    if ((mx<900) && (my<400) &&(mx>500) && (my>200))
+                    {
+                        sprintf(sendBuffer,"N %d",gId);
+                        sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
+
+                        //reset des variables
+                        for(int i=0; i<10; i++){
+                            strcpy(words[i], "-");
+                        }
+                        cptWord=0;
+                        tour = 0;
+                        vrai =0;
+                        choix=0;
+                        choix0=0;
+                        choix1=0;
+                        choix2=0;
+                        choix3=0;
+                        choix4=0;
+                        mot = " ";
+                        size=1;
+                        screenNumber = 6;
+                    }
+                    break;
                 default:
                     break;
            }
@@ -725,6 +750,26 @@ void manageNetwork()
                         case 'R':
                                 sscanf(gbuffer+2,"%d %d %s %d %d %d %d %d", &A, &B, word, &score0, &score1, &score2, &score3, &score4);
                                 screenNumber = 5;
+                                break;
+                        default:
+                            break;
+                }
+                break;
+            case 6 :
+                switch(gbuffer[0])
+                {
+                        case 'L':
+                                sscanf(gbuffer+2,"%s %s %s %s %s", gNames[0], gNames[1], gNames[2], gNames[3], gNames[4]);
+                                break;
+                        case 'R':
+                                sscanf(gbuffer+2,"%d", &role);
+                                if(role==0){
+                                      screenNumber=2;  
+                                }
+                                break;
+                        case 'G':
+                                sscanf(gbuffer+2, "%s", guessWord);
+                                screenNumber=2;
                                 break;
                         default:
                             break;
@@ -1068,6 +1113,31 @@ void manageRedraw()
 
             SDL_Rect replayBUTTON = { 500, 200, 400, 200 };
             SDL_RenderCopy(renderer, texture_replay, NULL, &replayBUTTON);
+            break;
+        }
+        case 6:
+        {
+            if(gId==0)
+                SDL_SetRenderDrawColor(renderer, 100, 255, 100, 230);//vert
+            if(gId==1)
+                SDL_SetRenderDrawColor(renderer, 100, 100, 255, 230);//bleu
+            if(gId==2)
+                SDL_SetRenderDrawColor(renderer, 255, 100, 255, 230);//violet
+            if(gId==3)
+                SDL_SetRenderDrawColor(renderer, 255, 100, 100, 230);//rouge
+            if(gId==4)
+                SDL_SetRenderDrawColor(renderer, 255, 255, 100, 230);//jaune
+            SDL_Rect rect = {0, 0, 1000, 500};
+            SDL_RenderFillRect(renderer, &rect);
+
+            myRenderText("Personnes pretes a rejouer :", 100, 50,60);
+            myRenderText(gNames[0],150,100,60);
+            myRenderText(gNames[1],150,160,60);
+            myRenderText(gNames[2],150,210,60);
+            myRenderText(gNames[3],150,260,60);
+            myRenderText(gNames[4],150,310,60);
+            myRenderText("Le jeu va bientot commencer ...", 50, 410,60);
+            break;
         }
         default:
             break;
