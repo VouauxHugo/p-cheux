@@ -35,7 +35,7 @@ int goEnabled;
 int connectEnabled;
 int screenNumber;
 char word[40];
-char roleaff[100];
+char roleaff[300];
 int cptWord;
 int quit = 0;
 SDL_Event event;
@@ -55,6 +55,7 @@ TTF_Font* Sans20;
 TTF_Font* Sans30; 
 int tour = 0;
 int role;
+int vrai;
 char guessWord[40];
 int choix=0;
 int tabChoix[2];
@@ -67,6 +68,8 @@ char *mot = " ";
 char *letter; //lettre appuyée
 char buffer[40]; //résultat
 int size=1;
+int A, B;
+int score0, score1, score2, score3, score4;
 
 volatile int synchro;
 
@@ -350,7 +353,7 @@ void manageEvent(SDL_Event event)
                 }
             }
 
-            if(screenNumber==4 && role==0){
+            if(screenNumber==4 && role==0 && vrai){
                 if (size+1<=40){
                         switch(event.key.keysym.sym){
                             case SDLK_a : 
@@ -708,13 +711,22 @@ void manageNetwork()
                 switch(gbuffer[0])
                 {
                         case 'S':
-                                sscanf(gbuffer+2,"%d", &screenNumber);
+                                sscanf(gbuffer+2,"%d %d", &screenNumber, &vrai);
                                 break;
                         default:
                             break;
                 }
                 break;
             case 4 :
+                switch(gbuffer[0])
+                {
+                        case 'R':
+                                sscanf(gbuffer+2,"%d %d %s %d %d %d %d %d", &A, &B, word, &score0, &score1, &score2, &score3, &score4);
+                                screenNumber = 5;
+                                break;
+                        default:
+                            break;
+                }
                 break;
             default:
                 break;
@@ -1009,14 +1021,48 @@ void manageRedraw()
                 strcpy(roleaff, "Vous etes CONTRE-ESPION");
                 myRenderText(roleaff, 25, 465 ,30);
 
-                strcpy(roleaff, "Selon vous, quel est");
-                myRenderText(roleaff,335,250,30);
-                strcpy(roleaff, "le mot secret ?");
-                myRenderText(roleaff,335,280,30);
+                if(vrai){
+                    strcpy(roleaff, "Selon vous, quel est");
+                    myRenderText(roleaff,335,250,30);
+                    strcpy(roleaff, "le mot secret ?");
+                    myRenderText(roleaff,335,280,30);
+                    myRenderText(mot,335, 310,30);
+                }
+                else{
+                    strcpy(roleaff, "Vous n'avez pas trouve");
+                    myRenderText(roleaff,335,250,30);
+                    strcpy(roleaff, "les 2 ESPIONS !!!");
+                    myRenderText(roleaff,335,280,30);
+                    strcpy(roleaff, "Dommage :)");
+                    myRenderText(roleaff,335, 310,30);
+                }
             }
-            if(!role)
-                myRenderText(mot,335, 310,30);             
+                             
             break;
+        }
+        case 5 :
+        {
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 230);//blanc
+            SDL_Rect rect = {0, 0, 1000, 500};
+            SDL_RenderFillRect(renderer, &rect);
+            myRenderText("La partie est terminee !",10, 10,60);
+            myRenderText("Les ESPIONS etaient :",10, 90,30);
+            myRenderText(gNames[A],10, 120,30);
+            myRenderText(gNames[B],10, 150,30);
+            strcpy(roleaff, "Le mot secret etait : ");
+            strcat(roleaff, word);
+            myRenderText(roleaff ,10, 180,30);
+            myRenderText("Voici les score : ",10, 210,30);
+            sprintf(roleaff, "%s : %d", gNames[0], score0);
+            myRenderText(roleaff ,10, 240,30);
+            sprintf(roleaff, "%s : %d", gNames[1], score1);
+            myRenderText(roleaff ,10, 270,30);
+            sprintf(roleaff, "%s : %d", gNames[2], score2);
+            myRenderText(roleaff ,10, 300,30);
+            sprintf(roleaff, "%s : %d", gNames[3], score3);
+            myRenderText(roleaff ,10, 330,30);
+            sprintf(roleaff, "%s : %d", gNames[4], score4);
+            myRenderText(roleaff ,10, 360,30);
         }
         default:
             break;
@@ -1031,6 +1077,7 @@ int main(int argc, char ** argv)
     for(int i=0; i<10; i++){
         strcpy(words[i], "-");
     }
+    vrai = 0;
 
     if (argc<6)
     {
