@@ -364,66 +364,88 @@ int main(int argc, char *argv[])
                 switch (buffer[0])
                 {
                         case 'S':
-                        {
-                                sscanf(buffer+2,"%d", &indiceJ);
-                                if(indiceJ != indiceJp)
                                 {
-                                        sscanf(buffer+4,"%d %d",&(tcpClients[indiceJ].choix[0]), &(tcpClients[indiceJ].choix[1]));
-                                        indiceJp=indiceJ;
-                                        nbReponses++;
-                                        if(nbReponses==5)
+                                        sscanf(buffer+2,"%d", &indiceJ);
+                                        if(indiceJ != indiceJp)
                                         {
-                                                nbReponses = 0;
-                                                indiceJp = 5;  
-                                                fsmServer = 3;
-                                                resultatEspion();
-                                                for(int i=0; i<5; i++){
-                                                        if(tcpClients[i].vrai){
-                                                                nbReponses++;
+                                                sscanf(buffer+4,"%d %d",&(tcpClients[indiceJ].choix[0]), &(tcpClients[indiceJ].choix[1]));
+                                                indiceJp=indiceJ;
+                                                nbReponses++;
+                                                if(nbReponses==5)
+                                                {
+                                                        nbReponses = 0;
+                                                        indiceJp = 5;  
+                                                        fsmServer = 3;
+                                                        resultatEspion();
+                                                        for(int i=0; i<5; i++){
+                                                                if(tcpClients[i].vrai){
+                                                                        nbReponses++;
+                                                                }
+                                                                sprintf(reply,"S 4 %d",tcpClients[i].vrai);
+                                                                sendMessageToClient(tcpClients[i].ipAddress,tcpClients[i].port,reply);
                                                         }
-                                                        sprintf(reply,"S 4 %d",tcpClients[i].vrai);
-                                                        sendMessageToClient(tcpClients[i].ipAddress,tcpClients[i].port,reply);
-                                                }                                           
+                                                        printf("Nombre de réponses attendues : %d\n", nbReponses);                              
+                                                }
                                         }
                                 }
-                        }
                         default:
                                 break;
                 }
         }
-        else if (fsmServer==3)
-        {
-                switch (buffer[0])
-                {
-                        case 'D':
+        else if (fsmServer==3){
+                if(nbReponses){
+                        printf("On attend les mots\n");
+                        switch (buffer[0])
                         {
-                                sscanf(buffer+2,"%d", &indiceJ);
-                                if(indiceJ != indiceJp)
-                                {
-                                        sscanf(buffer+4,"%s",tcpClients[indiceJ].guess);
-                                        indiceJp=indiceJ;
-                                        nbReponses--;
-                                        if(nbReponses==0)
+                                case 'D':
                                         {
-                                                int A=5, B;
-                                                for(int i=0; i<5; i++){
-                                                        if(tcpClients[i].role){
-                                                                if(A==5)
-                                                                        A=i;
-                                                                else
-                                                                        B=i;
+                                                sscanf(buffer+2,"%d", &indiceJ);
+                                                if(indiceJ != indiceJp)
+                                                {
+                                                        sscanf(buffer+4,"%s",tcpClients[indiceJ].guess);
+                                                        indiceJp=indiceJ;
+                                                        nbReponses--;
+                                                        if(nbReponses==0)
+                                                        {
+                                                                resultatMot();
+                                                                int A=5, B;
+                                                                for(int i=0; i<5; i++){
+                                                                        if(tcpClients[i].role){
+                                                                                if(A==5)
+                                                                                        A=i;
+                                                                                else
+                                                                                        B=i;
+                                                                        }
+                                                                        strcpy(noms[i], "-");
+                                                                }
+                                                                indiceJp = 5;
+                                                                fsmServer = 4;
+                                                                sprintf(reply,"R %d %d %s %d %d %d %d %d", A, B, mpts[ind_WordToGuess], tcpClients[0].score, tcpClients[1].score, tcpClients[2].score, tcpClients[3].score, tcpClients[4].score);
+                                                                broadcastMessage(reply);                           
                                                         }
-                                                        strcpy(noms[i], "-");
                                                 }
-                                                indiceJp = 5;
-                                                fsmServer = 4;
-                                                sprintf(reply,"R %d %d %s %d %d %d %d %d", A, B, mpts[ind_WordToGuess], tcpClients[0].score, tcpClients[1].score, tcpClients[2].score, tcpClients[3].score, tcpClients[4].score);
-                                                broadcastMessage(reply);                                     
                                         }
-                                }
+                                default:
+                                        break;
                         }
-                        default:
-                                break;
+                }
+                else{
+                        printf("On envoie directement les résultats\n");
+                        int A=5, B;
+                        for(int i=0; i<5; i++){
+                                if(tcpClients[i].role){
+                                        if(A==5)
+                                                A=i;
+                                        else
+                                                B=i;
+                                }
+                                strcpy(noms[i], "-");
+                        }
+                        indiceJp = 5;
+                        fsmServer = 4;
+                        sprintf(reply,"R %d %d %s %d %d %d %d %d", A, B, mpts[ind_WordToGuess], tcpClients[0].score, tcpClients[1].score, tcpClients[2].score, tcpClients[3].score, tcpClients[4].score);
+                        broadcastMessage(reply); 
+                        printf("résultats envoyés\n"); 
                 }
         }
         else if (fsmServer==4)
@@ -432,29 +454,29 @@ int main(int argc, char *argv[])
                 {
                         case 'N':
                         {
-                                sscanf(buffer+2,"%d", &indiceJ);
-                                if(indiceJ != indiceJp)
-                                {
-                                        indiceJp=indiceJ;
-                                        nbReponses++;
-                                        strcpy(noms[indiceJ], tcpClients[indiceJ].name);
-                                        sprintf(reply,"L %s %s %s %s %s", noms[0], noms[1], noms[2], noms[3],noms[4]);
-                                        broadcastMessage(reply); 
-                                        if(nbReponses==5)
+                                        sscanf(buffer+2,"%d", &indiceJ);
+                                        if(indiceJ != indiceJp)
                                         {
-                                                indiceJp = 5;
-                                                fsmServer=1;
-                                                melangerDeck();
-                                                affecterRoles();
-                                                razJoueurs();//mots que chaque joueur a dit pour la manche précédente doivent être remis à zéro
-                                                broadcastRoles();
-                                                broadcastWord();//tiere un mot au hasard et l'envoyer le mot pour les espions UNIQUEMENT
-                                                printClients();
-                                                joueurSuivant=0;
-                                                nbReponses=0;                                  
+                                                indiceJp=indiceJ;
+                                                nbReponses++;
+                                                strcpy(noms[indiceJ], tcpClients[indiceJ].name);
+                                                sprintf(reply,"L %s %s %s %s %s", noms[0], noms[1], noms[2], noms[3],noms[4]);
+                                                broadcastMessage(reply); 
+                                                if(nbReponses==5)
+                                                {
+                                                        indiceJp = 5;
+                                                        fsmServer=1;
+                                                        melangerDeck();
+                                                        affecterRoles();
+                                                        razJoueurs();//mots que chaque joueur a dit pour la manche précédente doivent être remis à zéro
+                                                        broadcastRoles();
+                                                        broadcastWord();//tiere un mot au hasard et l'envoyer le mot pour les espions UNIQUEMENT
+                                                        printClients();
+                                                        joueurSuivant=0;
+                                                        nbReponses=0;                                  
+                                                }
                                         }
                                 }
-                        }
                         default:
                                 break;
                 }

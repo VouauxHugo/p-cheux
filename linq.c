@@ -1008,7 +1008,6 @@ void manageRedraw()
                     }
                 }
             }
-            
             break;
         }
         case 4 :
