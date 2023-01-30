@@ -28,7 +28,7 @@ int nbClients;
 int fsmServer;
 int deck[5]={0,0,0,1,1};//0 pour contre-espion, 1 pour espion
 char *mpts[]={"bas","muse","boulet","spectre","patron","moulin","piano","oseille","billet","Rome"};
-int joueurCourant, joueurSuivant, nbReponses, indiceJ, indiceJp = 5, indiceM = 0;
+int joueurCourant, joueurSuivant, nbReponses, nbReponsesAtt, indiceJ, indiceJp = 5, indiceM = 0;
 int ind_WordToGuess;
 char noms[5][40];
 
@@ -81,6 +81,7 @@ void razJoueurs()
         {
                 strcpy(tcpClients[i].words[0], "-");
                 strcpy(tcpClients[i].words[1],"-");
+                tcpClients[i].vrai=0;
         }
         printf("Les mots ont été effacés\n");
 }
@@ -219,6 +220,7 @@ int main(int argc, char *argv[])
      struct sockaddr_in serv_addr, cli_addr;
      int n;
      int i;
+     nbReponsesAtt = 0;
 
      char com;
      char clientIpAddress[256], clientName[256];
@@ -379,12 +381,12 @@ int main(int argc, char *argv[])
                                                         resultatEspion();
                                                         for(int i=0; i<5; i++){
                                                                 if(tcpClients[i].vrai){
-                                                                        nbReponses++;
+                                                                        nbReponsesAtt++;
                                                                 }
                                                                 sprintf(reply,"S 4 %d",tcpClients[i].vrai);
                                                                 sendMessageToClient(tcpClients[i].ipAddress,tcpClients[i].port,reply);
                                                         }
-                                                        printf("Nombre de réponses attendues : %d\nfsmServer : %d\n", nbReponses, fsmServer);                              
+                                                        printf("Nombre de réponses attendues : %d\nfsmServer : %d\n", nbReponsesAtt, fsmServer);                              
                                                 }
                                         }
                                 }
@@ -393,10 +395,10 @@ int main(int argc, char *argv[])
                                 break;
                 }
         }
-        else if (fsmServer==3)
+        else if(fsmServer==3)
         {
                 printf("fsmServer pour la deuxième fois : %d\n", fsmServer);
-                if(nbReponses)
+                if(nbReponsesAtt)
                 {
                         printf("On attend les mots\n");
                         switch (buffer[0])
@@ -408,8 +410,8 @@ int main(int argc, char *argv[])
                                                 {
                                                         sscanf(buffer+4,"%s",tcpClients[indiceJ].guess);
                                                         indiceJp=indiceJ;
-                                                        nbReponses--;
-                                                        if(nbReponses==0)
+                                                        nbReponsesAtt--;
+                                                        if(nbReponsesAtt==0)
                                                         {
                                                                 resultatMot();
                                                                 int A=5, B;
@@ -483,7 +485,7 @@ int main(int argc, char *argv[])
                                                 broadcastWord();//tiere un mot au hasard et l'envoyer le mot pour les espions UNIQUEMENT
                                                 printClients();
                                                 joueurSuivant=0;
-                                                nbReponses=0;                                  
+                                                nbReponses=0;                       
                                         }
                                 }
                         }
