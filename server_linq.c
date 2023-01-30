@@ -266,20 +266,23 @@ int main(int argc, char *argv[])
 
      while (1)
      {    
-        newsockfd = accept(sockfd, 
-                 (struct sockaddr *) &cli_addr, 
-                 &clilen);
-        if (newsockfd < 0) 
-                error("ERROR on accept");
 
+        //==============================================================================================================================================
+        printf("Jusqu'ici tout va bien (mais le sol arrive) : server_linq.c (ligne 272)\n");
+        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);//cette ligne pose problème si aucun contre-espion ne trouve les deux espions
+        printf("Bon bah on s'est pris le sol si ce message ne s'affiche pas.\n");
+        //==============================================================================================================================================
+
+
+        if (newsockfd < 0) {
+                error("ERROR on accept");
+        }
         bzero(buffer,256);
         n = read(newsockfd,buffer,255);
         if (n < 0) 
                 error("ERROR reading from socket");
-
         printf("Received packet from %s:%d\nData: [%s]\n\n",
                 inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port), buffer);
-
         if (fsmServer==0)
         {
                 switch (buffer[0])
@@ -493,7 +496,6 @@ int main(int argc, char *argv[])
                                 break;
                 }
         }
-        
         close(newsockfd);
      }
      close(sockfd);

@@ -55,6 +55,8 @@ SDL_Texture *texture_fond[4],*texture_personnes;
 TTF_Font* Sans60; 
 TTF_Font* Sans20; 
 TTF_Font* Sans30; 
+TTF_Font* LittleBoy30;
+TTF_Font* LittleBoy20;
 int tour = 0;
 int role;
 int vrai;
@@ -565,7 +567,7 @@ void manageEvent(SDL_Event event)
             {
                 case 0:
                     SDL_GetMouseState( &mx, &my );
-                    if ((mx<800) && (my<450) &&(mx>400) && (my>50) && (connectEnabled==1))
+                    if ((mx<900) && (my<490) &&(mx>600) && (my>390) && (connectEnabled==1))
                     {
                         sprintf(sendBuffer,"C %s %d %s",
                         gClientIpAddress,gClientPort,gName);
@@ -573,6 +575,7 @@ void manageEvent(SDL_Event event)
                         gServerPort,sendBuffer);
                         connectEnabled=0;
                     }
+                    SDL_Rect dstrect = {475, 390, 300, 100 };
                     break;
                 case 3:
                     SDL_GetMouseState( &mx, &my );
@@ -654,7 +657,7 @@ void manageEvent(SDL_Event event)
                     break;
                 case 5:
                     SDL_GetMouseState( &mx, &my );
-                    if ((mx<900) && (my<400) &&(mx>500) && (my>200))
+                    if ((mx<870) && (my<380) &&(mx>550) && (my>230))
                     {
                         sprintf(sendBuffer,"N %d",gId);
                         sendMessageToServer(gServerIpAddress, gServerPort,sendBuffer);
@@ -795,6 +798,10 @@ void myRenderText(char *m,int x,int y, int taille)
         surfaceMessage = TTF_RenderText_Solid(Sans30, m, col1);
     else if(taille==20)
         surfaceMessage = TTF_RenderText_Solid(Sans20, m, col1);
+    else if(taille==130)
+        surfaceMessage = TTF_RenderText_Solid(LittleBoy30, m, col1);
+    else if(taille==120)
+        surfaceMessage = TTF_RenderText_Solid(LittleBoy20, m, col1);
     SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
     SDL_Rect Message_rect;
@@ -821,11 +828,24 @@ void manageRedraw()
             // si connectEnabled, alors afficher connect
             if (connectEnabled==1)
             {
-                SDL_Rect dstrect = {400, 50, 400, 400 };
+                SDL_Rect dstrect = {600, 390, 300, 100 };
                 SDL_RenderCopy(renderer, texture_connectbutton, NULL, &dstrect);
                 SDL_Rect aff = {0, 0, 250, 500 };
                 SDL_RenderCopy(renderer, texture_affiche, NULL, &aff);
             }
+            myRenderText("Voici les regles du jeu LINQ :", 270, 10, 130);
+            myRenderText("Ce jeu se joue a cinq joueurs, il y a deux ESPIONS et trois ", 270, 70,120);
+            myRenderText("CONTRE-ESPIONS. Les ESPIONS dispose d'un mot secret qu'eux", 270, 100, 120);
+            myRenderText("seuls connaissent.", 270, 130, 120);
+            myRenderText("Chaque joueur donne tour a tour un mot, les ESPIONS doivent", 270, 170, 120);
+            myRenderText("ainsi se reconnaitre mais sans se faire demasquer par leurs", 270, 200, 120);
+            myRenderText("adversaires. Les CONTRE-ESPIONS qui trouvent les deux ESPIONS", 270, 230, 120);
+            myRenderText("peuvent ensuite essayer de deviner le mot secret.", 270, 260, 120);
+            myRenderText("Pour le decompte des points c'est complique, donc faites nous", 270, 290, 120);
+            myRenderText("confiance, sachez juste que dans notre version du jeu vous", 270, 320, 120);
+            myRenderText("pouvez finir endette.", 270, 350, 120);
+            myRenderText("par Thomas KORPAL", 270, 400, 30);
+            myRenderText("et Hugo VOUAUX", 270, 450, 30);
 
             if (cptWord>0)
             {
@@ -847,7 +867,7 @@ void manageRedraw()
             SDL_Rect rect = {0, 0, 1000, 500};
             SDL_RenderFillRect(renderer, &rect);
 
-            myRenderText("Personnes connectees :", 100, 50,60);
+            myRenderText("Personnes connectees :", 50, 20,60);
             myRenderText(gNames[0],150,100,60);
             myRenderText(gNames[1],150,160,60);
             myRenderText(gNames[2],150,210,60);
@@ -996,14 +1016,14 @@ void manageRedraw()
                 strcpy(roleaff, gNames[tabChoix[0]]);
                 myRenderText(roleaff,335,280,30);
                 if(role){
-                    strcpy(roleaff, "En attente des autres");
+                    strcpy(roleaff, "En attente des autres ...");
                     myRenderText(roleaff,335, 340,30);
                 }
                 else{
                     if(choix==2){
                         strcpy(roleaff, gNames[tabChoix[1]]);
                         myRenderText(roleaff,335,310,30);
-                        strcpy(roleaff, "En attente des autres");
+                        strcpy(roleaff, "En attente des autres ...");
                         myRenderText(roleaff,335, 340,30);
                     }
                 }
@@ -1093,26 +1113,26 @@ void manageRedraw()
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 230);//blanc
             SDL_Rect rect = {0, 0, 1000, 500};
             SDL_RenderFillRect(renderer, &rect);
-            myRenderText("La partie est terminee !",10, 10,60);
-            myRenderText("Les ESPIONS etaient :",10, 90,30);
-            myRenderText(gNames[A],10, 120,30);
-            myRenderText(gNames[B],10, 150,30);
+            myRenderText("La partie est terminee !",50, 10,60);
+            myRenderText("Les ESPIONS etaient :",50, 100,30);
+            myRenderText(gNames[A],50, 130,30);
+            myRenderText(gNames[B],50, 160,30);
             strcpy(roleaff, "Le mot secret etait : ");
             strcat(roleaff, word);
-            myRenderText(roleaff ,10, 180,30);
-            myRenderText("Voici les score : ",10, 210,30);
+            myRenderText(roleaff ,50, 200,30);
+            myRenderText("Voici les scores : ",50, 240,30);
             sprintf(roleaff, "%s : %d", gNames[0], score0);
-            myRenderText(roleaff ,10, 240,30);
+            myRenderText(roleaff ,50, 270,30);
             sprintf(roleaff, "%s : %d", gNames[1], score1);
-            myRenderText(roleaff ,10, 270,30);
+            myRenderText(roleaff ,50, 300,30);
             sprintf(roleaff, "%s : %d", gNames[2], score2);
-            myRenderText(roleaff ,10, 300,30);
+            myRenderText(roleaff ,50, 330,30);
             sprintf(roleaff, "%s : %d", gNames[3], score3);
-            myRenderText(roleaff ,10, 330,30);
+            myRenderText(roleaff ,50, 360,30);
             sprintf(roleaff, "%s : %d", gNames[4], score4);
-            myRenderText(roleaff ,10, 360,30);
+            myRenderText(roleaff ,50, 390,30);
 
-            SDL_Rect replayBUTTON = { 500, 200, 400, 200 };
+            SDL_Rect replayBUTTON = { 550, 230, 320, 150 };
             SDL_RenderCopy(renderer, texture_replay, NULL, &replayBUTTON);
             break;
         }
@@ -1137,7 +1157,7 @@ void manageRedraw()
             myRenderText(gNames[2],150,210,60);
             myRenderText(gNames[3],150,260,60);
             myRenderText(gNames[4],150,310,60);
-            myRenderText("Le jeu va bientot commencer ...", 50, 410,60);
+            myRenderText("Le jeu va bientot REcommencer ...", 50, 410,60);
             break;
         }
         default:
@@ -1214,6 +1234,8 @@ int main(int argc, char ** argv)
     Sans60 = TTF_OpenFont("sans.ttf", 60);
     Sans30 = TTF_OpenFont("sans.ttf", 30);
     Sans20 = TTF_OpenFont("sans.ttf", 20); 
+    LittleBoy30 = TTF_OpenFont("LittleBoy-X3m3a.ttf", 60);
+    LittleBoy20 = TTF_OpenFont("LittleBoy-X3m3a.ttf", 40); 
 
     /* Creation du thread serveur tcp. */
     printf ("Creation du thread serveur tcp !\n");
