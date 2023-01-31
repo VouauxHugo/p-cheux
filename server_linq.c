@@ -29,7 +29,7 @@ struct _client
 int nbClients;
 int fsmServer;
 int deck[5]={0,0,0,1,1};//0 pour contre-espion, 1 pour espion
-char *mpts[]={"bas","muse","boulet","spectre","patron","moulin","piano","oseille","billet","Rome"};
+char *mpts[]={"bas","muse","suedoise","spectre","patron","moulin","piano","oseille","billet","Rome"};
 int joueurCourant, joueurSuivant, nbReponses, nbReponsesAtt, indiceJ, indiceJp = 5, indiceM = 0;
 int ind_WordToGuess;
 char noms[5][40];
@@ -178,24 +178,24 @@ void resultatEspion(){
         for(int i=0; i<5; i++){
                 if(tcpClients[i].role){//Cas des espions
                         if(tcpClients[tcpClients[i].choix[1]].role){//si il trouve l'autre espion
-                                tcpClients[i].score+=3;
+                                tcpClients[i].score+=3;//il gagne 3 points
                         }
                         else{
                                 flagEspion = 1;//Tous les contre-espion recoivent 1 point
                                 tcpClients[i].score--;//l'espion qui s'est trompé perd un point
-                                tcpClients[tcpClients[i].choix[1]].score++;//qu'il donne au contre-espion
+                                tcpClients[tcpClients[i].choix[1]].score++;//qu'il donne au contre-espion qu'il a choisi
                         }
                 }
                 else{//Cas des contre-espions
                         if(tcpClients[tcpClients[i].choix[0]].role && tcpClients[tcpClients[i].choix[1]].role){//si il trouve les deux espions
-                                tcpClients[tcpClients[i].choix[0]].score--;
+                                tcpClients[tcpClients[i].choix[0]].score--;//ceux-ci perdent 1 point
                                 tcpClients[tcpClients[i].choix[1]].score--;
-                                tcpClients[i].score+=2;
-                                tcpClients[i].vrai=1;
+                                tcpClients[i].score+=2;//le contre-espion gagne 2 points
+                                tcpClients[i].vrai=1;//il pourra alors essayer de deviner le mot
                         }
                 }
         }
-        if(flagEspion){
+        if(flagEspion){//tous les contre-espions reçoivent 1 point si au moins l'un des deux espions n'a pas trouvé son compère
                 for(int i=0; i<5; i++){
                         if(tcpClients[i].role==0){
                                 tcpClients[i].score++;
@@ -206,9 +206,9 @@ void resultatEspion(){
 
 void resultatMot(){
         for(int i=0; i<5; i++){
-                if(tcpClients[i].vrai){
-                        if(strcmp(tcpClients[i].guess, mpts[ind_WordToGuess])==0){
-                                tcpClients[i].score+=5;
+                if(tcpClients[i].vrai){//si le contre-espion a trouvé les deux espions
+                        if(strcmp(tcpClients[i].guess, mpts[ind_WordToGuess])==0){//on compare le mot donné au mot secret
+                                tcpClients[i].score+=5;//il gagne 5 points
                         }
                 }
         }
@@ -392,7 +392,7 @@ int main(int argc, char *argv[])
                                                                 sendMessageToClient(tcpClients[i].ipAddress,tcpClients[i].port,reply);
                                                         }
                                                         printf("Nombre de réponses attendues : %d\nfsmServer : %d\n", nbReponsesAtt, fsmServer);  
-                                                        
+
                                                         if(nbReponsesAtt==0){
                                                                 printf("On envoie directement les résultats\n");
                                                                 int A=5, B;
