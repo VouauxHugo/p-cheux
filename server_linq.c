@@ -391,7 +391,27 @@ int main(int argc, char *argv[])
                                                                 sprintf(reply,"S 4 %d",tcpClients[i].vrai);
                                                                 sendMessageToClient(tcpClients[i].ipAddress,tcpClients[i].port,reply);
                                                         }
-                                                        printf("Nombre de réponses attendues : %d\nfsmServer : %d\n", nbReponsesAtt, fsmServer);                              
+                                                        printf("Nombre de réponses attendues : %d\nfsmServer : %d\n", nbReponsesAtt, fsmServer);  
+                                                        
+                                                        if(nbReponsesAtt==0){
+                                                                printf("On envoie directement les résultats\n");
+                                                                int A=5, B;
+                                                                for(int i=0; i<5; i++){
+                                                                        if(tcpClients[i].role){
+                                                                                if(A==5){
+                                                                                        A=i;
+                                                                                }
+                                                                                else{
+                                                                                        B=i;
+                                                                                }
+                                                                        }
+                                                                        strcpy(noms[i], "-");
+                                                                }
+                                                                indiceJp = 5;
+                                                                fsmServer = 4;
+                                                                sprintf(reply,"R %d %d %s %d %d %d %d %d", A, B, mpts[ind_WordToGuess], tcpClients[0].score, tcpClients[1].score, tcpClients[2].score, tcpClients[3].score, tcpClients[4].score);
+                                                                broadcastMessage(reply);
+                                                        }                            
                                                 }
                                         }
                                 }
@@ -442,27 +462,6 @@ int main(int argc, char *argv[])
                                 default:
                                         break;
                         }
-                }
-                else
-                {
-                        printf("On envoie directement les résultats\n");
-                        int A=5, B;
-                        for(int i=0; i<5; i++){
-                                if(tcpClients[i].role){
-                                        if(A==5){
-                                                A=i;
-                                        }
-                                        else{
-                                                B=i;
-                                        }
-                                }
-                                strcpy(noms[i], "-");
-                        }
-                        indiceJp = 5;
-                        fsmServer = 4;
-                        sprintf(reply,"R %d %d %s %d %d %d %d %d", A, B, mpts[ind_WordToGuess], tcpClients[0].score, tcpClients[1].score, tcpClients[2].score, tcpClients[3].score, tcpClients[4].score);
-                        broadcastMessage(reply); 
-                        printf("résultats envoyés\n");
                 }
         }
         else if (fsmServer==4)
